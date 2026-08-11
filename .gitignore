@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# transform logs contain full input/output text -- never commit sample runs
+*.slopify.log.json
+run.json
