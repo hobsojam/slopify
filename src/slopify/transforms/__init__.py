@@ -10,15 +10,17 @@ from slopify.transforms.grandiose import GrandioseTransform
 # Order matters: later transforms see the output of earlier ones.
 # Vocabulary/transitions/hedging/grandiose run before structural
 # transforms (fragmentation, triplets) so those see the swapped-in
-# slop words too.
+# slop words too. EmDashTransform runs before SentenceFragmentTransform
+# because both compete for the same "and"/"but" spots -- em dash is the
+# more recognizable slop signal, so it gets first pick.
 DEFAULT_PIPELINE_ORDER: list[type[Transform]] = [
     VocabularySwapTransform,
     TransitionTransform,
     HedgingTransform,
     GrandioseTransform,
     TripletTransform,
-    SentenceFragmentTransform,
     EmDashTransform,
+    SentenceFragmentTransform,
 ]
 
 __all__ = [

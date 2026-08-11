@@ -17,3 +17,5 @@ secrets/
 # transform logs contain full input/output text -- never commit sample runs
 *.slopify.log.json
 run.json
+input.txt
+output.txt
