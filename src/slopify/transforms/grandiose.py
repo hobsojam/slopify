@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 
-from slopify.transforms._sentences import split_sentences
+from slopify.transforms._sentences import map_sentences
 from slopify.transforms.base import Transform
 
 # Generic closers, not tied to the sentence's actual content. Good enough
@@ -22,10 +22,12 @@ class GrandioseTransform(Transform):
     name = "grandiose"
 
     def apply(self, text: str, weight: float, rng: random.Random) -> str:
-        sentences = split_sentences(text)
-        out = []
-        for sentence in sentences:
-            out.append(sentence)
-            if rng.random() < weight:
-                out.append(rng.choice(_CLOSERS))
-        return " ".join(out)
+        def transform(sentences: list[str]) -> list[str]:
+            out = []
+            for sentence in sentences:
+                out.append(sentence)
+                if rng.random() < weight:
+                    out.append(rng.choice(_CLOSERS))
+            return out
+
+        return map_sentences(text, transform)

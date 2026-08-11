@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 import re
 
-from slopify.transforms._sentences import split_sentences
+from slopify.transforms._sentences import map_sentences
 from slopify.transforms.base import Transform
 
 _SPLIT_POINT = re.compile(r"\s+(and|but)\s+")
@@ -24,18 +24,20 @@ class SentenceFragmentTransform(Transform):
     name = "sentence_fragment"
 
     def apply(self, text: str, weight: float, rng: random.Random) -> str:
-        sentences = split_sentences(text)
-        out = []
-        for sentence in sentences:
-            match = _SPLIT_POINT.search(sentence)
-            if match and rng.random() < weight:
-                head = sentence[: match.start()].rstrip()
-                conjunction = match.group(1)
-                tail = sentence[match.end() :]
-                if not head.endswith((".", "!", "?")):
-                    head += "."
-                out.append(head)
-                out.append(f"{conjunction.capitalize()} {tail}")
-            else:
-                out.append(sentence)
-        return " ".join(out)
+        def transform(sentences: list[str]) -> list[str]:
+            out = []
+            for sentence in sentences:
+                match = _SPLIT_POINT.search(sentence)
+                if match and rng.random() < weight:
+                    head = sentence[: match.start()].rstrip()
+                    conjunction = match.group(1)
+                    tail = sentence[match.end() :]
+                    if not head.endswith((".", "!", "?")):
+                        head += "."
+                    out.append(head)
+                    out.append(f"{conjunction.capitalize()} {tail}")
+                else:
+                    out.append(sentence)
+            return out
+
+        return map_sentences(text, transform)

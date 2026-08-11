@@ -28,11 +28,27 @@ to flag the output as AI-generated.
 ## Usage
 
 ```bash
+python -m venv .venv
+source .venv/Scripts/activate   # Windows Bash; use .venv\Scripts\Activate.ps1 in PowerShell
 pip install -e .
+```
 
-slopify input.txt --intensity 70 --seed 1 --log run.json -o output.txt
+```bash
+# file in, file out
+slopify input.txt --intensity 70 -o output.txt
+
+# or pipe through stdin/stdout (both default to '-')
+echo "Your normal sentence here." | slopify --intensity 90
+
+# --seed makes a run reproducible: same input + intensity + seed -> same output
+slopify input.txt --intensity 70 --seed 1 -o output.txt
+
+# --log saves a transform log so the run can be reversed later
+slopify input.txt --intensity 70 --log run.json -o output.txt
 deslopify output.txt --log run.json -o restored.txt
 ```
+
+Run `slopify --help` / `deslopify --help` for the full flag list.
 
 ## Layout
 
